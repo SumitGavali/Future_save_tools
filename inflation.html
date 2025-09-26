@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inflation Impact Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #10b981;
+            --positive: #10b981;
+            --warning: #f59e0b;
+            --negative: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f6f8fc;
+            --bg-secondary: #f9fafb;
+            --border: #e5e7eb;
+            --card-bg: #ffffff;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --text: #f3f4f6;
+            --text-light: #d1d5db;
+            --bg: #111827;
+            --bg-secondary: #1f2937;
+            --border: #374151;
+            --card-bg: #1a2435;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.27);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            letter-spacing: 0.02em;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            padding: 1.2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .logo i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .title {
+            flex: 1;
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 0;
+            color: var(--text);
+            font-weight: bold;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text);
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 2.8rem;
+            height: 2.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border);
+        }
+
+        .container p {
+            opacity: 0.85;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem 1rem;
+            margin-bottom: 1.2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border-radius: 0.6rem;
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid var(--primary);
+        }
+
+        input:focus {
+            box-shadow: 0 0 2px var(--primary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 0.6rem 0;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: #fff;
+            font-size: 1.14rem;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.7rem;
+            margin: 1rem 0;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+            transition: filter 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            filter: brightness(1.05);
+        }
+
+        .results {
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            margin-bottom: 1.3rem;
+            overflow: auto;
+        }
+
+        .inflation-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media(max-width:600px) {
+            .inflation-results {
+                grid-template-columns: 1fr;
+            }
+
+            .card,
+            .impact-summary {
+                padding: 1.1rem 0.5rem;
+            }
+
+            .btn {
+                font-size: 1.01rem;
+            }
+
+            .chart-container {
+                padding: 0.5rem;
+            }
+
+            .card-title,
+            h2 {
+                font-size: 1.02rem;
+            }
+        }
+
+        .inflation-item {
+            text-align: center;
+            padding: 1.2rem;
+            background-color: var(--bg-secondary);
+            border-radius: 0.5rem;
+        }
+
+        .inflation-label {
+            font-size: 0.97rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .inflation-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .inflation-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .positive {
+            color: var(--positive);
+        }
+
+        .negative {
+            color: var(--negative);
+        }
+
+        .impact-summary {
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            border-radius: 1rem;
+            padding: 1.6rem 1rem;
+            margin: 1.6rem 0;
+            border-left: 4px solid var(--warning);
+        }
+
+        .impact-summary h3 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .disclaimer {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <a href="/index.html">FutureSave</a>
+            </div>
+            <h1 class="title">Inflation Impact Calculator</h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <p>See how inflation affects the real value of your investments over time</p>
+    </div>
+
+    <div class="container">
+        <div class="calculator-grid">
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-calculator"></i>
+                    Investment Details
+                </h2>
+                <form id="calculatorForm">
+                    <div class="form-group">
+                        <label for="investmentAmount">Investment Amount (₹)</label>
+                        <input type="number" id="investmentAmount" min="1000" max="100000000" step="1000" value="500000"
+                            required>
+                        <input type="range" id="investmentAmountRange" min="1000" max="10000000" step="1000"
+                            value="500000">
+                    </div>
+                    <div class="form-group">
+                        <label for="investmentPeriod">Investment Period (Years)</label>
+                        <input type="number" id="investmentPeriod" min="1" max="30" step="1" value="5" required>
+                        <input type="range" id="investmentPeriodRange" min="1" max="30" step="1" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="expectedReturn">Expected Annual Return (%)</label>
+                        <input type="number" id="expectedReturn" min="1" max="20" step="0.1" value="8.0" required>
+                        <input type="range" id="expectedReturnRange" min="1" max="20" step="0.1" value="8.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="inflationRate">Expected Inflation Rate (%)</label>
+                        <input type="number" id="inflationRate" min="0" max="10" step="0.1" value="5.5" required>
+                        <input type="range" id="inflationRateRange" min="0" max="10" step="0.1" value="5.5">
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-calculator"></i>
+                        Calculate Inflation Impact
+                    </button>
+                </form>
+            </div>
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Inflation Impact Results
+                </h2>
+                <div class="results">
+                    <div class="chart-container">
+                        <canvas id="inflationChart"></canvas>
+                    </div>
+                    <div class="inflation-results">
+                        <div class="inflation-item">
+                            <div class="inflation-label">Future Value</div>
+                            <div id="futureValue" class="inflation-value">₹7,34,664</div>
+                            <div class="inflation-description">Nominal amount after growth</div>
+                        </div>
+                        <div class="inflation-item">
+                            <div class="inflation-label">Real Value</div>
+                            <div id="realValue" class="inflation-value">₹5,63,734</div>
+                            <div class="inflation-description">In today's purchasing power</div>
+                        </div>
+                    </div>
+                    <div class="impact-summary">
+                        <h3><i class="fas fa-info-circle"></i> Impact Summary</h3>
+                        <p id="impactText">Inflation will reduce your purchasing power by ₹1,70,930 over 5 years. This
+                            means your investment will effectively be worth 23.3% less than its nominal value.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fas fa-calendar-alt"></i>
+                Year-by-Year Breakdown
+            </h2>
+            <div class="chart-container">
+                <canvas id="yearlyChart"></canvas>
+            </div>
+        </div>
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> This calculator provides estimates for educational purposes only. The actual
+            impact of inflation may vary based on economic conditions. Please consult with a certified financial advisor
+            before making any investment decisions.
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <p>© 2023 FutureSave. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const calculatorForm = document.getElementById('calculatorForm');
+        const futureValueElement = document.getElementById('futureValue');
+        const realValueElement = document.getElementById('realValue');
+        const impactTextElement = document.getElementById('impactText');
+        let inflationChartInstance = null;
+        let yearlyChartInstance = null;
+
+        // Theme management
+        function setupTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeButton(newTheme);
+            });
+        }
+        function updateThemeButton(theme) {
+            themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+        function setupRangeInputs() {
+            function syncInputAndRange(input, range) {
+                if (input.id === 'investmentAmount') {
+                    range.max = input.max / 10;
+                }
+                input.addEventListener('input', () => { range.value = input.value; });
+                range.addEventListener('input', () => { input.value = range.value; });
+            }
+            syncInputAndRange(document.getElementById('investmentAmount'), document.getElementById('investmentAmountRange'));
+            syncInputAndRange(document.getElementById('investmentPeriod'), document.getElementById('investmentPeriodRange'));
+            syncInputAndRange(document.getElementById('expectedReturn'), document.getElementById('expectedReturnRange'));
+            syncInputAndRange(document.getElementById('inflationRate'), document.getElementById('inflationRateRange'));
+        }
+        function calculateFutureValue(principal, years, rate) {
+            return principal * Math.pow(1 + rate / 100, years);
+        }
+        function calculateInflationImpact(futureValue, years, inflationRate) {
+            const inflationFactor = Math.pow(1 + inflationRate / 100, years);
+            return futureValue / inflationFactor;
+        }
+        function calculateYearlyBreakdown(principal, years, returnRate, inflationRate) {
+            const breakdown = [];
+            for (let year = 1; year <= years; year++) {
+                const futureValue = calculateFutureValue(principal, year, returnRate);
+                const realValue = calculateInflationImpact(futureValue, year, inflationRate);
+                breakdown.push({
+                    year,
+                    futureValue,
+                    realValue,
+                    inflationLoss: futureValue - realValue
+                });
+            }
+            return breakdown;
+        }
+        // Chart DPI fix for mobile
+        function resizeChartCanvas(canvas, height) {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.offsetWidth * dpr;
+            canvas.height = height * dpr;
+            canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        function updateInflationChart(principal, futureValue, realValue, years) {
+            const canvas = document.getElementById('inflationChart');
+            resizeChartCanvas(canvas, 230);
+            const ctx = canvas.getContext('2d');
+            if (inflationChartInstance) inflationChartInstance.destroy();
+            const inflationLoss = futureValue - realValue;
+            inflationChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Real Value (Today\'s ₹)', 'Inflation Loss'],
+                    datasets: [{
+                        data: [realValue, inflationLoss],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderColor: ['#0da271', '#dc2626'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.label || '';
+                                    if (label) label += ': ';
+                                    label += '₹' + Math.round(context.raw).toLocaleString('en-IN');
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function updateYearlyChart(breakdown) {
+            const canvas = document.getElementById('yearlyChart');
+            resizeChartCanvas(canvas, 190);
+            const ctx = canvas.getContext('2d');
+            if (yearlyChartInstance) yearlyChartInstance.destroy();
+            const years = breakdown.map(item => item.year);
+            const futureValues = breakdown.map(item => item.futureValue);
+            const realValues = breakdown.map(item => item.realValue);
+            yearlyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Future Value (Nominal)',
+                            data: futureValues,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Real Value (Today\'s ₹)',
+                            data: realValues,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Investment Growth vs. Inflation',
+                            font: { size: 16 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function updateResults(principal, futureValue, realValue, years, inflationRate) {
+            futureValueElement.textContent = '₹' + Math.round(futureValue).toLocaleString('en-IN');
+            realValueElement.textContent = '₹' + Math.round(realValue).toLocaleString('en-IN');
+            const inflationLoss = futureValue - realValue;
+            const percentLoss = (inflationLoss / futureValue * 100).toFixed(1);
+            impactTextElement.innerHTML = `
+                Inflation will reduce your purchasing power by <strong>₹${Math.round(inflationLoss).toLocaleString('en-IN')}</strong> 
+                over ${years} years. This means your investment will effectively be worth <strong>${percentLoss}% less</strong> 
+                than its nominal value when accounting for ${inflationRate}% average annual inflation.
+            `;
+        }
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const principal = parseFloat(document.getElementById('investmentAmount').value);
+            const years = parseFloat(document.getElementById('investmentPeriod').value);
+            const returnRate = parseFloat(document.getElementById('expectedReturn').value);
+            const inflationRate = parseFloat(document.getElementById('inflationRate').value);
+            const futureValue = calculateFutureValue(principal, years, returnRate);
+            const realValue = calculateInflationImpact(futureValue, years, inflationRate);
+            const yearlyBreakdown = calculateYearlyBreakdown(principal, years, returnRate, inflationRate);
+            updateResults(principal, futureValue, realValue, years, inflationRate);
+            updateInflationChart(principal, futureValue, realValue, years);
+            updateYearlyChart(yearlyBreakdown);
+        }
+        function init() {
+            setupTheme();
+            setupRangeInputs();
+            calculatorForm.addEventListener('submit', handleFormSubmit);
+            calculatorForm.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

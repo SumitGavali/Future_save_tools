@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Home Loan Prepayment Simulator - FutureSave</title>
+    <meta name="description"
+        content="Interactive Home Loan Prepayment Simulator for Indian borrowers. Visualize interest savings, loan tenure reduction and optimize prepayment strategy." />
+    <meta name="keywords"
+        content="home loan prepayment calculator India, should I prepay home loan, loan interest savings calculator, futureSave home loan" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --negative: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #f6f8fc;
+            --bg-secondary: #f9fafb;
+            --border: #e5e7eb;
+            --card-bg: #ffffff;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            scroll-margin-top: 100px;
+            /* Creates space above when focused */
+        }
+
+        @media (max-width: 768px) {
+            input:focus {
+                transform: translateZ(0);
+                /* Prevent layout shifts */
+            }
+        }
+
+        [data-theme="dark"] {
+            --text: #f3f4f6;
+            --text-light: #d1d5db;
+            --bg: #111827;
+            --bg-secondary: #1f2937;
+            --border: #374151;
+            --card-bg: #1a2435;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.5;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-bottom: var(--safe-area-inset-bottom);
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem 2rem;
+        }
+
+        /* Mobile-First Header */
+        header {
+            background-color: var(--bg-secondary);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        h1.title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin: 0;
+            text-align: center;
+            flex: 1;
+            padding: 0 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        /* Mobile-Optimized Form */
+        .description {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin: 1rem 0 1.5rem;
+            line-height: 1.4;
+        }
+
+        .calculator-card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .input-with-slider {
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            background-color: var(--card-bg);
+            color: var(--text);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            outline: none;
+            margin: 0.5rem 0;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 3px solid var(--card-bg);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-height: 44px;
+            padding: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            height: 300px;
+        }
+
+        .affiliate-cta {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .affiliate-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            min-height: 44px;
+        }
+
+        /* Mobile-Specific Improvements */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.75rem 1.5rem;
+            }
+
+            .calculator-card {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            h1.title {
+                font-size: 1.1rem;
+                padding: 0 0.5rem;
+            }
+
+            input[type="number"],
+            input[type="text"] {
+                padding: 0.875rem;
+                font-size: 1rem;
+            }
+
+            .calculate-btn {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .chart-container {
+                height: 250px;
+                padding: 0.75rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1200px;
+                padding: 0 2rem 3rem;
+            }
+
+            .calculator-card {
+                padding: 2rem;
+            }
+
+            .results-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .impact-summary {
+            padding: 1.5rem;
+            background-color: var(--bg-secondary);
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--warning);
+        }
+
+        .impact-summary h3 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles for better accessibility */
+        button:focus-visible,
+        input:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/index.html" class="logo">
+                <div>
+                    <i class="fas fa-chart-line"></i>
+                    FutureSave
+                </div>
+            </a>
+            <h1 class="title">Home Loan Prepayment Simulator</h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <p class="description">
+            See how small extra payments can reduce your loan tenure by years and save you lakhs in interest
+        </p>
+
+        <div class="calculator-card">
+            <form id="loanForm">
+                <!-- Loan Amount -->
+                <div class="input-group">
+                    <label for="loanAmount">Loan Amount</label>
+                    <div class="input-with-slider">
+                        <input type="number" id="loanAmount" min="500000" max="20000000" step="10000" value="5000000"
+                            aria-describedby="loanAmountHelp">
+                        <input type="range" id="loanAmountRange" min="500000" max="20000000" step="10000"
+                            value="5000000">
+                        <div class="range-labels">
+                            <span>₹5L</span>
+                            <span>₹2Cr</span>
+                        </div>
+                    </div>
+                    <small id="loanAmountHelp" style="color: var(--text-light);">Adjust using slider or enter
+                        amount</small>
+                </div>
+
+                <!-- Interest Rate -->
+                <div class="input-group">
+                    <label for="interestRate">Interest Rate (%)</label>
+                    <input type="number" id="interestRate" min="6.5" max="12" step="0.05" value="8.5"
+                        aria-describedby="interestRateHelp">
+                    <small id="interestRateHelp" style="color: var(--text-light);">Annual interest rate (6.5% -
+                        12%)</small>
+                </div>
+
+                <!-- Loan Tenure -->
+                <div class="input-group">
+                    <label for="loanTenure">Loan Tenure (Years)</label>
+                    <input type="number" id="loanTenure" min="5" max="30" step="1" value="20"
+                        aria-describedby="loanTenureHelp">
+                    <small id="loanTenureHelp" style="color: var(--text-light);">Loan duration in years (5-30)</small>
+                </div>
+
+                <!-- Prepayment Type -->
+                <div class="input-group">
+                    <label>Prepayment Type</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="typeLumpSum">
+                            One-time Lump Sum
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="typeIncreasedEMI">
+                            Increase Monthly EMI
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Lump Sum Prepayment -->
+                <div class="input-group" id="lumpSumGroup" style="display: none;">
+                    <label for="lumpSumAmount">Lump Sum Amount</label>
+                    <div class="input-with-slider">
+                        <input type="number" id="lumpSumAmount" min="50000" max="1000000" step="10000" value="100000">
+                        <input type="range" id="lumpSumAmountRange" min="50000" max="1000000" step="10000"
+                            value="100000">
+                        <div class="range-labels">
+                            <span>₹50K</span>
+                            <span>₹10L</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Increased EMI -->
+                <div class="input-group" id="increasedEMIGroup" style="display: none;">
+                    <label for="increasedEMIAmount">Extra EMI Amount</label>
+                    <div class="input-with-slider">
+                        <input type="number" id="increasedEMIAmount" min="1000" max="50000" step="1000" value="5000">
+                        <input type="range" id="increasedEMIAmountRange" min="1000" max="50000" step="1000"
+                            value="5000">
+                        <div class="range-labels">
+                            <span>₹1K</span>
+                            <span>₹50K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start Prepayment After -->
+                <div class="input-group">
+                    <label for="startPrepaymentAfter">Start After (Months)</label>
+                    <input type="number" id="startPrepaymentAfter" min="0" max="60" step="1" value="12"
+                        aria-describedby="startPrepaymentHelp">
+                    <small id="startPrepaymentHelp" style="color: var(--text-light);">When to start prepayment (0-60
+                        months)</small>
+                </div>
+
+                <button type="submit" class="calculate-btn">
+                    <span>Calculate Savings</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- Savings Summary -->
+            <div class="summary-card">
+                <h3 style="margin: 0 0 1rem 0; font-size: 1.2rem;">Your Potential Savings</h3>
+                <div class="summary-item">
+                    <span>Interest Saved</span>
+                    <strong id="interestSaved">₹0</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Time Saved</span>
+                    <strong id="timeSaved">0 years</strong>
+                </div>
+                <div class="summary-item">
+                    <span>New Loan End</span>
+                    <strong id="newEndDate">N/A</strong>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="chart-container">
+                <canvas id="amortizationChart"></canvas>
+            </div>
+            <div class="impact-summary">
+                <h2><i class="fas fa-info-circle" aria-label="Info"></i> What is this tool about , and what does this
+                    charts says .
+                </h2>
+                <p>
+                    Designed specifically for Indian home loan borrowers who want to understand how making extra
+                    prepayments can significantly reduce their loan tenure and interest burden .
+                </p>
+                <br><br>
+                <h3>What the Graph Means</h3>
+                <p>
+                    <strong>Stacked Bars Represent Each Month's Payment Breakdown</strong><br>
+                    For every month, the graph shows how much of your payment goes towards the loan amount and how much
+                    goes toward interest.
+
+                </p>
+
+                <h3>Two Color-Coded Stacks:</h3>
+                <ul> <strong>Blue Shade:</strong> original loan repayment amounts <br>
+                    <strong>Green Shade:</strong> new loan repayment after prepayment adjustments.<br>
+
+                </ul>
+                <h3>Visual Comparison:</h3>
+                <p>See how prepayments reduce interest components and escalate principal payments, leading to faster
+                    loan closure.</p>
+                <ul> <strong>X-Axis:</strong> Monthly installments (months). <br>
+                    <strong>Y-Axis:</strong> Payment amount in rupees (₹).<br>
+
+                </ul>
+
+                <h3>Savings Summary Card</h3>
+                <p>
+                    <strong>Total Interest Saved:</strong>
+                <p>How much money you save in interest payments due to prepayments.</p>
+
+                <strong>Time Saved:</strong>
+                <p>How many years and months your loan tenure shortens.</p>
+
+
+                </p>
+
+                <!-- Affiliate CTA -->
+                <!-- <div class="affiliate-cta">
+                <p style="margin: 0 0 1rem 0; color: var(--text);">
+                    <strong>Want better loan rates?</strong> Compare offers from top banks
+                </p>
+                <a href="https://affiliateloans.example.com" class="affiliate-btn" target="_blank">
+                    Compare Loan Offers
+                </a>
+            </div> -->
+            </div>
+    </main>
+
+    <script>// Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        setTheme(localStorage.getItem('theme') || 'light');
+
+        // DOM Elements
+        const loanForm = document.getElementById('loanForm');
+        const resultsSection = document.getElementById('resultsSection');
+
+        // Input elements
+        const loanAmountInput = document.getElementById('loanAmount');
+        const loanAmountRange = document.getElementById('loanAmountRange');
+        const interestRateInput = document.getElementById('interestRate');
+        const loanTenureInput = document.getElementById('loanTenure');
+        const typeLumpSumCheckbox = document.getElementById('typeLumpSum');
+        const typeIncreasedEMICheckbox = document.getElementById('typeIncreasedEMI');
+        const lumpSumGroup = document.getElementById('lumpSumGroup');
+        const lumpSumAmountInput = document.getElementById('lumpSumAmount');
+        const lumpSumAmountRange = document.getElementById('lumpSumAmountRange');
+        const increasedEMIGroup = document.getElementById('increasedEMIGroup');
+        const increasedEMIAmountInput = document.getElementById('increasedEMIAmount');
+        const increasedEMIAmountRange = document.getElementById('increasedEMIAmountRange');
+        const startPrepaymentAfterInput = document.getElementById('startPrepaymentAfter');
+
+        // Result elements
+        const interestSavedEl = document.getElementById('interestSaved');
+        const timeSavedEl = document.getElementById('timeSaved');
+        const newEndDateEl = document.getElementById('newEndDate');
+
+        // Chart instance
+        let amortizationChart = null;
+
+        // Sync input and range elements
+        function syncInputRange(input, range) {
+            input.addEventListener('input', () => {
+                range.value = input.value;
+                scheduleCalculation();
+            });
+
+            range.addEventListener('input', () => {
+                input.value = range.value;
+                scheduleCalculation();
+            });
+        }
+
+        // Initialize sync for all input-range pairs
+        syncInputRange(loanAmountInput, loanAmountRange);
+        syncInputRange(lumpSumAmountInput, lumpSumAmountRange);
+        syncInputRange(increasedEMIAmountInput, increasedEMIAmountRange);
+
+        // Prepayment type visibility
+        function updatePrepaymentVisibility() {
+            lumpSumGroup.style.display = typeLumpSumCheckbox.checked ? 'block' : 'none';
+            increasedEMIGroup.style.display = typeIncreasedEMICheckbox.checked ? 'block' : 'none';
+        }
+
+        typeLumpSumCheckbox.addEventListener('change', updatePrepaymentVisibility);
+        typeIncreasedEMICheckbox.addEventListener('change', updatePrepaymentVisibility);
+
+        // Financial Calculations (keep all these functions the same)
+        function calculateEMI(principal, annualRate, years) {
+            const monthlyRate = annualRate / 12 / 100;
+            const months = years * 12;
+            return (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+                (Math.pow(1 + monthlyRate, months) - 1);
+        }
+
+        function generateAmortizationSchedule(principal, annualRate, tenureYears) {
+            const monthlyRate = annualRate / 12 / 100;
+            const months = tenureYears * 12;
+            const emi = calculateEMI(principal, annualRate, tenureYears);
+            let balance = principal;
+            const schedule = [];
+
+            for (let month = 1; month <= months; month++) {
+                const interest = balance * monthlyRate;
+                const principalPaid = emi - interest;
+                balance = Math.max(0, balance - principalPaid);
+
+                schedule.push({
+                    month,
+                    interest,
+                    principalPaid,
+                    balance
+                });
+
+                if (balance <= 0) break;
+            }
+
+            return schedule;
+        }
+
+        function generatePrepaymentSchedule(principal, annualRate, tenureYears, lumpSum, extraEMI, startMonth) {
+            const monthlyRate = annualRate / 12 / 100;
+            const totalMonths = tenureYears * 12;
+            let balance = principal;
+            const schedule = [];
+            let currentEMI = calculateEMI(principal, annualRate, tenureYears);
+
+            for (let month = 1; month <= totalMonths && balance > 0; month++) {
+                if (month === startMonth && lumpSum > 0) {
+                    balance = Math.max(0, balance - lumpSum);
+                }
+
+                const effectiveEMI = (month >= startMonth && extraEMI > 0) ? currentEMI + extraEMI : currentEMI;
+                const interest = balance * monthlyRate;
+                let principalPaid = effectiveEMI - interest;
+
+                if (principalPaid > balance) {
+                    principalPaid = balance;
+                }
+
+                balance = Math.max(0, balance - principalPaid);
+                schedule.push({ month, interest, principalPaid, balance });
+
+                if (month === startMonth && balance > 0) {
+                    const remainingMonths = totalMonths - month;
+                    currentEMI = calculateEMI(balance, annualRate, remainingMonths / 12);
+                }
+            }
+
+            return schedule;
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function formatDate(monthsFromNow) {
+            const date = new Date();
+            date.setMonth(date.getMonth() + monthsFromNow);
+            return date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short' });
+        }
+
+        // Chart rendering (keep this the same)
+        function renderChart(originalSchedule, prepaymentSchedule) {
+            const ctx = document.getElementById('amortizationChart').getContext('2d');
+            if (amortizationChart) amortizationChart.destroy();
+
+            const maxPoints = Math.min(60, Math.max(originalSchedule.length, prepaymentSchedule.length));
+            const step = Math.ceil(Math.max(originalSchedule.length, prepaymentSchedule.length) / maxPoints);
+
+            const labels = [];
+            const originalInterest = [];
+            const prepaymentInterest = [];
+
+            for (let i = 0; i < maxPoints; i++) {
+                const index = i * step;
+                if (index < originalSchedule.length) {
+                    labels.push(`Year ${Math.ceil((index + 1) / 12)}`);
+                    originalInterest.push(originalSchedule[index].interest);
+                    prepaymentInterest.push(index < prepaymentSchedule.length ? prepaymentSchedule[index].interest : 0);
+                }
+            }
+
+            amortizationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels, datasets: [
+                        { label: 'Original Loan', data: originalInterest, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', tension: 0.4, fill: true },
+                        { label: 'With Prepayment', data: prepaymentInterest, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.4, fill: true }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Interest Payment Comparison', font: { size: 14 } }, legend: { position: 'bottom' } },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                // Format the number with ₹ symbol and Indian numbering
+                                label += '₹' + context.parsed.y.toLocaleString('en-IN');
+                                return label;
+                            }
+                        }
+                    }
+                    ,
+                    scales: { y: { beginAtZero: true, ticks: { callback: value => '₹' + (value / 1000).toFixed(0) + 'K' } } }
+                }
+            });
+        }
+
+        // Debounced calculation
+        let calculationTimer;
+        function scheduleCalculation() {
+            clearTimeout(calculationTimer);
+            calculationTimer = setTimeout(runCalculation, 300);
+        }
+
+        // Fixed main calculation function (NO AUTO-SCROLL)
+        function runCalculation() {
+            const loanAmount = parseInt(loanAmountInput.value);
+            const interestRate = parseFloat(interestRateInput.value);
+            const loanTenure = parseInt(loanTenureInput.value);
+            const lumpSum = typeLumpSumCheckbox.checked ? parseInt(lumpSumAmountInput.value) : 0;
+            const extraEMI = typeIncreasedEMICheckbox.checked ? parseInt(increasedEMIAmountInput.value) : 0;
+            const startMonth = parseInt(startPrepaymentAfterInput.value) + 1;
+
+            if (!loanAmount || !interestRate || !loanTenure) return;
+
+            const originalSchedule = generateAmortizationSchedule(loanAmount, interestRate, loanTenure);
+            const prepaymentSchedule = generatePrepaymentSchedule(loanAmount, interestRate, loanTenure, lumpSum, extraEMI, startMonth);
+
+            const originalInterest = originalSchedule.reduce((sum, month) => sum + month.interest, 0);
+            const prepaymentInterest = prepaymentSchedule.reduce((sum, month) => sum + month.interest, 0);
+            const interestSaved = originalInterest - prepaymentInterest;
+            const timeSaved = originalSchedule.length - prepaymentSchedule.length;
+
+            interestSavedEl.textContent = formatCurrency(interestSaved);
+            timeSavedEl.textContent = `${Math.floor(timeSaved / 12)} years ${timeSaved % 12} months`;
+            newEndDateEl.textContent = formatDate(prepaymentSchedule.length);
+
+            resultsSection.style.display = 'block';
+            renderChart(originalSchedule, prepaymentSchedule);
+
+            // REMOVED: resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Event listeners with proper scroll behavior
+        loanForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearTimeout(calculationTimer);
+            runCalculation();
+
+            // Only scroll when user explicitly submits the form
+            setTimeout(() => {
+                resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        });
+
+        // Real-time updates with debouncing
+        const inputs = [
+            loanAmountInput, loanAmountRange, interestRateInput, loanTenureInput,
+            lumpSumAmountInput, lumpSumAmountRange, increasedEMIAmountInput, increasedEMIAmountRange,
+            startPrepaymentAfterInput, typeLumpSumCheckbox, typeIncreasedEMICheckbox
+        ];
+
+        inputs.forEach(input => {
+            if (input.type === 'checkbox') {
+                input.addEventListener('change', scheduleCalculation);
+            } else {
+                input.addEventListener('input', scheduleCalculation);
+            }
+        });
+
+        // Initialize
+        updatePrepaymentVisibility();</script>
+</body>
+
+</html>
