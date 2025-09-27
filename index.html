@@ -39,6 +39,12 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
+        html,
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             letter-spacing: 0.02em;
@@ -47,6 +53,7 @@
             background-color: var(--bg);
             padding: 0;
             margin: 0;
+            -webkit-text-size-adjust: 100%;
         }
 
         .container {
@@ -57,14 +64,18 @@
 
         header {
             background-color: var(--bg-secondary);
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .logo {
@@ -88,6 +99,7 @@
             justify-content: center;
             background-color: var(--bg);
             box-shadow: var(--shadow);
+            touch-action: manipulation;
         }
 
         .theme-toggle:hover {
@@ -96,16 +108,17 @@
 
         .hero {
             text-align: center;
-            padding: 3rem 0;
+            padding: 2rem 1rem;
             background: linear-gradient(to right, #2563eb, #3b82f6);
             color: white;
             border-radius: 0 0 1rem 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .hero h1 {
             font-size: 2.2rem;
             margin-bottom: 1rem;
+            line-height: 1.3;
         }
 
         .hero p {
@@ -113,13 +126,14 @@
             max-width: 700px;
             margin: 0 auto;
             opacity: 0.93;
+            line-height: 1.5;
         }
 
         .calculator-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         @media (min-width: 768px) {
@@ -131,8 +145,8 @@
         .card {
             background-color: var(--card-bg);
             border-radius: 1rem;
-            padding: 2rem 1rem;
-            margin-bottom: 1.2rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
             box-shadow: var(--shadow);
         }
 
@@ -141,6 +155,7 @@
             margin-bottom: 1.5rem;
             color: var(--primary);
             font-weight: 600;
+            line-height: 1.3;
         }
 
         .impact-summary {
@@ -156,6 +171,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            line-height: 1.4;
         }
 
         .form-group {
@@ -168,24 +184,29 @@
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--text);
+            line-height: 1.4;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 0.9rem 1rem;
+            padding: 1rem;
             border-radius: 0.6rem;
             font-size: 1rem;
             margin-bottom: 0.8rem;
             border: 1px solid var(--primary);
+
+            min-height: 50px;
         }
 
         input:focus {
             box-shadow: 0 0 2px var(--primary);
+            outline: none;
         }
 
         input[type="range"] {
             width: 100%;
             margin: 0.6rem 0;
+            height: 8px;
         }
 
         .btn {
@@ -193,12 +214,17 @@
             color: #fff;
             font-size: 1.15rem;
             border: none;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2rem;
             border-radius: 0.7rem;
             margin: 1rem 0;
             width: 100%;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
             transition: filter 0.2s;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -206,31 +232,33 @@
         }
 
         .results {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .chart-container {
-            background: var(--bg-card);
+            background: var(--card-bg);
             border-radius: 1rem;
             box-shadow: var(--shadow);
             padding: 1rem;
-            margin-bottom: 1.3rem;
+            margin-bottom: 1rem;
             overflow: auto;
+            min-height: 300px;
         }
 
-        .result-summary,
-        .impact-summary {
-            background: var(--bg-card);
+        .result-summary {
+            background: var(--card-bg);
             box-shadow: var(--shadow);
             border-radius: 1rem;
-            padding: 2rem 1rem;
+            padding: 1.5rem;
             text-align: center;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
         }
 
         .winner-text {
             font-size: 1.6rem;
             font-weight: bold;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
         }
 
         .winner-fd {
@@ -243,70 +271,160 @@
 
         .savings-text {
             font-size: 1.2rem;
+            line-height: 1.4;
         }
 
         .disclaimer {
             background-color: var(--bg-secondary);
             padding: 1.5rem;
             border-radius: 0.5rem;
-            margin: 3rem 0;
+            margin: 2rem 0;
             font-size: 0.9rem;
             color: var(--text-light);
+            line-height: 1.5;
         }
 
         footer {
             text-align: center;
-            padding: 2rem 0;
+            padding: 1.5rem 0;
             color: var(--text-light);
             font-size: 0.9rem;
             border-top: 1px solid var(--border);
+            line-height: 1.5;
         }
 
         .hidden {
             display: none;
         }
 
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
+        /* ===== IMPROVED MOBILE STYLES ===== */
 
-        .btn-outline:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        @media(max-width: 520px) {
-
-            h1,
-            h2 {
-                font-size: 1.25rem;
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1rem;
             }
 
-            .card,
-            .impact-summary,
-            .result-summary {
-                padding: 1.2rem 0.6rem;
+            .hero {
+                padding: 1.5rem 1rem;
             }
 
-            .btn {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
                 font-size: 1rem;
             }
         }
 
-        /* --- Add this at the end of your CSS --- */
-
-        @media (max-width: 700px) {
+        /* Mobile Large */
+        @media (max-width: 768px) {
             .container {
-                max-width: 100vw;
-                padding: 0 0.7rem;
+                max-width: 100%;
+                padding: 0 1rem;
             }
 
             .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.7rem;
+                flex-direction: row;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .theme-toggle {
+                width: 2.5rem;
+                height: 2.5rem;
+                font-size: 1.2rem;
+            }
+
+            .hero {
+                padding: 1.5rem 0.5rem;
+                margin-bottom: 1rem;
+                border-radius: 0 0 0.8rem 0.8rem;
+            }
+
+            .hero h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                padding: 0 0.5rem;
+            }
+
+            .calculator-grid {
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .card {
+                padding: 1.2rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .card-title {
+                font-size: 1.3rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+
+            label {
+                font-size: 1rem;
+                margin-bottom: 0.4rem;
+            }
+
+            input[type="number"] {
+                padding: 0.9rem;
+                font-size: 1rem;
+                min-height: 46px;
+            }
+
+            .btn {
+                font-size: 1.05rem;
+                padding: 1rem 1.5rem;
+                min-height: 50px;
+                margin: 0.8rem 0;
+            }
+
+            .chart-container {
+                padding: 0.8rem;
+                min-height: 250px;
+            }
+
+            .result-summary {
+                padding: 1.2rem;
+            }
+
+            .winner-text {
+                font-size: 1.3rem;
+            }
+
+            .savings-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Mobile Small */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.8rem;
+            }
+
+            header {
+                padding: 0.8rem 0;
+            }
+
+            .header-content {
+                gap: 0.8rem;
             }
 
             .logo {
@@ -320,73 +438,118 @@
             }
 
             .hero {
-                padding: 1.5rem 0.3rem;
-                font-size: 1rem;
+                padding: 1.2rem 0.3rem;
             }
 
             .hero h1 {
                 font-size: 1.3rem;
+                margin-bottom: 0.6rem;
             }
 
             .hero p {
-                font-size: 0.98rem;
+                font-size: 0.9rem;
+                line-height: 1.5;
             }
 
             .calculator-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem;
+                gap: 0.8rem;
             }
 
-            .card,
-            .impact-summary,
-            .result-summary {
-                padding: 1rem 0.5rem;
-                margin-bottom: 0.7rem;
+            .card {
+                padding: 1rem;
+                border-radius: 0.8rem;
             }
 
             .card-title {
                 font-size: 1.1rem;
+                margin-bottom: 1rem;
             }
 
-            .form-group label {
-                font-size: 1rem;
+            .form-group {
+                margin-bottom: 1rem;
             }
 
-            input[type="number"],
+            label {
+                font-size: 0.95rem;
+            }
+
+            input[type="number"] {
+                padding: 0.8rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+                border-radius: 0.5rem;
+            }
+
             input[type="range"] {
-                font-size: 1rem;
-                padding: 0.7rem 0.7rem;
+                margin: 0.5rem 0;
             }
 
             .btn {
                 font-size: 1rem;
-                padding: 0.8rem 1rem;
+                padding: 0.9rem 1rem;
+                min-height: 46px;
+                border-radius: 0.6rem;
+                margin: 0.6rem 0;
             }
 
             .chart-container {
-                padding: 0.5rem;
-                min-width: 0;
-                overflow-x: auto;
+                padding: 0.6rem;
+                min-height: 220px;
+                border-radius: 0.8rem;
             }
 
-            .true-cost-grid {
-                grid-template-columns: 1fr !important;
-                gap: 0.7rem;
+            .result-summary {
+                padding: 1rem;
+                border-radius: 0.8rem;
             }
-        }
 
-        @media (max-width: 420px) {
-            .logo {
+            .winner-text {
+                font-size: 1.1rem;
+            }
+
+            .savings-text {
                 font-size: 1rem;
             }
 
+            .disclaimer {
+                padding: 1.2rem;
+                margin: 1.5rem 0;
+                font-size: 0.85rem;
+            }
+
+            footer {
+                padding: 1.2rem 0;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Very Small Mobile */
+        @media (max-width: 360px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
             .hero h1 {
-                font-size: 1.05rem;
+                font-size: 1.1rem;
+            }
+
+            .hero p {
+                font-size: 0.85rem;
             }
 
             .btn {
                 font-size: 0.95rem;
-                padding: 0.7rem 0.5rem;
+                padding: 0.8rem;
+            }
+        }
+
+        /* Prevent zoom on input focus for iOS */
+        @media screen and (max-width: 768px) {
+
+            input[type="number"],
+            input[type="text"],
+            select {
+                font-size: 16px !important;
             }
         }
     </style>

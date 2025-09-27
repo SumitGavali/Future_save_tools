@@ -36,6 +36,17 @@
             --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.27);
         }
 
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        html,
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             letter-spacing: 0.02em;
@@ -44,18 +55,24 @@
             background-color: var(--bg);
             padding: 0;
             margin: 0;
+            -webkit-text-size-adjust: 100%;
+            /* Prevent font scaling on iOS */
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 0 1rem;
+            width: 100%;
         }
 
         header {
             background: var(--bg-secondary);
-            padding: 1.2rem 0;
+            padding: 1rem 0;
             box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-container {
@@ -64,93 +81,86 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 1rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--primary);
-        }
-
-        .logo i {
-            margin-right: 8px;
-            color: var(--primary);
-        }
-
-        .logo a {
-            text-decoration: none;
-            color: var(--primary);
-            font-weight: bold;
         }
 
         .title {
             flex: 1;
             text-align: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin: 0;
             color: var(--text);
             font-weight: bold;
+            line-height: 1.3;
         }
 
         .theme-toggle {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--text);
             padding: 0.5rem;
             border-radius: 50%;
-            width: 2.8rem;
-            height: 2.8rem;
+            width: 2.5rem;
+            height: 2.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--bg);
             box-shadow: var(--shadow);
-        }
-
-        .theme-toggle:hover {
-            background-color: var(--border);
+            touch-action: manipulation;
         }
 
         .container p {
             opacity: 0.85;
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.5;
             text-align: center;
+            margin: 1rem 0;
         }
 
         .calculator-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-bottom: 2rem;
+            width: 100%;
         }
 
         @media (min-width: 768px) {
             .calculator-grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 2rem;
             }
         }
 
         .card {
             background-color: var(--card-bg);
-            border-radius: 1rem;
-            padding: 2rem 1rem;
-            margin-bottom: 1.2rem;
+            border-radius: 0.8rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
             box-shadow: var(--card-shadow);
+            width: 100%;
         }
 
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 1.2rem;
             color: var(--primary);
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            line-height: 1.3;
         }
 
         .form-group {
@@ -160,38 +170,42 @@
         label {
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 1.08rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text);
+            line-height: 1.3;
         }
 
         input[type="number"] {
-            width: 50%;
-            padding: 0.9rem 1rem;
-            border-radius: 0.6rem;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
             font-size: 1rem;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             border: 1px solid var(--primary);
+            min-height: 44px;
+            /* Better touch target */
         }
-
 
         input:focus {
             box-shadow: 0 0 2px var(--primary);
+            outline: none;
         }
 
         input[type="range"] {
-            width: 50%;
-            margin: 0.6rem 0;
+            width: 100%;
+            margin: 0.5rem 0;
+            height: 6px;
         }
 
         .btn {
             background: linear-gradient(90deg, var(--primary), var(--accent));
             color: #fff;
-            font-size: 1.14rem;
+            font-size: 1rem;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 0.7rem;
-            margin: 1rem 0;
+            padding: 0.9rem 1.5rem;
+            border-radius: 0.6rem;
+            margin: 0.8rem 0;
             width: 100%;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
             transition: filter 0.2s;
@@ -199,6 +213,9 @@
             justify-content: center;
             align-items: center;
             gap: 0.5rem;
+            min-height: 44px;
+            /* Minimum touch target size */
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -206,189 +223,213 @@
         }
 
         .results {
-            margin-top: 2rem;
+            margin-top: 1.5rem;
         }
 
         .chart-container {
-            background: var(--bg-card);
-            border-radius: 1rem;
+            background: var(--card-bg);
+            border-radius: 0.8rem;
             box-shadow: var(--shadow);
             padding: 1rem;
-            margin-bottom: 1.3rem;
-            overflow: auto;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            width: 100%;
         }
 
         .inflation-results {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
             margin: 1.5rem 0;
         }
 
-        @media(max-width:600px) {
-            .inflation-results {
-                grid-template-columns: 1fr;
-            }
-
-            .card,
-            .impact-summary {
-                padding: 1.1rem 0.5rem;
-            }
-
-            .btn {
-                font-size: 1.01rem;
-            }
-
-            .chart-container {
-                padding: 0.5rem;
-            }
-
-            .card-title,
-            h2 {
-                font-size: 1.02rem;
-            }
-        }
-
         .inflation-item {
             text-align: center;
-            padding: 1.2rem;
+            padding: 1rem;
             background-color: var(--bg-secondary);
             border-radius: 0.5rem;
         }
 
         .inflation-label {
-            font-size: 0.97rem;
+            font-size: 0.9rem;
             color: var(--text-light);
             margin-bottom: 0.5rem;
         }
 
         .inflation-value {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
             margin: 0.5rem 0;
         }
 
-        .inflation-description {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .positive {
-            color: var(--positive);
-        }
-
-        .negative {
-            color: var(--negative);
-        }
-
         .impact-summary {
-            background: var(--bg-card);
+            background: var(--card-bg);
             box-shadow: var(--shadow);
-            border-radius: 1rem;
-            padding: 1.6rem 1rem;
-            margin: 1.6rem 0;
+            border-radius: 0.8rem;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
             border-left: 4px solid var(--warning);
-        }
-
-        .impact-summary h3 {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .disclaimer {
             background-color: var(--bg-secondary);
-            padding: 1.5rem;
+            padding: 1.2rem;
             border-radius: 0.5rem;
-            margin: 2rem 0;
-            font-size: 0.9rem;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
             color: var(--text-light);
+            line-height: 1.4;
         }
 
         footer {
             text-align: center;
-            padding: 2rem 0;
+            padding: 1.5rem 0;
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-top: 1px solid var(--border);
         }
 
-        @media (max-width: 600px) {
+        /* === MOBILE OPTIMIZATIONS === */
+        @media (max-width: 768px) {
             .container {
-                max-width: 100vw;
-                padding: 0 0.5rem;
+                padding: 0 0.8rem;
             }
 
             .header-container {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.7rem;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
                 padding: 0 0.5rem;
             }
 
             .logo {
                 font-size: 1.1rem;
-                margin-bottom: 0.5rem;
             }
 
             .title {
                 font-size: 1rem;
-                text-align: left;
-                margin-bottom: 0.5rem;
+                text-align: center;
+                padding: 0 0.5rem;
             }
 
             .theme-toggle {
                 width: 2.2rem;
                 height: 2.2rem;
-                font-size: 1.1rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .calculator-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem;
+                font-size: 1rem;
             }
 
             .card {
-                padding: 1rem 0.5rem;
-                margin-bottom: 0.7rem;
+                padding: 1rem;
+                margin-bottom: 0.8rem;
+                border-radius: 0.6rem;
             }
 
             .card-title {
-                font-size: 1.05rem;
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
             }
 
             label {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 0.4rem;
             }
 
-            input[type="number"],
-            input[type="range"] {
-                width: 100%;
-                font-size: 1rem;
-                padding: 0.7rem 0.7rem;
+            input[type="number"] {
+                padding: 0.7rem;
+                font-size: 0.95rem;
+                min-height: 42px;
             }
 
             .btn {
-                font-size: 1rem;
+                font-size: 0.95rem;
                 padding: 0.8rem 1rem;
+                min-height: 42px;
+                margin: 0.6rem 0;
             }
 
             .chart-container {
-                padding: 0.5rem;
-                min-width: 0;
-                overflow-x: auto;
+                padding: 0.8rem;
+                margin-bottom: 0.8rem;
             }
 
-            .inflation-results {
-                grid-template-columns: 1fr !important;
-                gap: 0.7rem;
+            .container p {
+                font-size: 0.95rem;
+                line-height: 1.4;
+                text-align: left;
+                margin: 0.8rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.6rem;
             }
 
-            .impact-summary {
-                padding: 1rem 0.5rem;
-                margin: 1rem 0;
+            .header-container {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1rem;
+                order: 1;
+            }
+
+            .title {
+                font-size: 0.9rem;
+                order: 3;
+                flex-basis: 100%;
+                text-align: center;
+                margin-top: 0.5rem;
+            }
+
+            .theme-toggle {
+                order: 2;
+                width: 2rem;
+                height: 2rem;
+                font-size: 0.9rem;
+            }
+
+            .card {
+                padding: 0.8rem;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            input[type="number"] {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.7rem 0.8rem;
+            }
+
+            .container p {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+        }
+
+        /* Prevent horizontal scrolling on very small devices */
+        @media (max-width: 320px) {
+            .container {
+                padding: 0 0.4rem;
+            }
+
+            .card {
+                padding: 0.6rem;
+            }
+
+            .btn {
+                font-size: 0.85rem;
             }
         }
     </style>
