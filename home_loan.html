@@ -420,6 +420,113 @@
                 text-align: center;
             }
         }
+
+        @media (max-width: 600px) {
+            .container {
+                max-width: 100vw;
+                padding: 8px 4vw;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 10px 0 0 0;
+            }
+
+            .brand {
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
+            .header-controls {
+                flex-direction: row;
+                gap: 10px;
+                width: 100%;
+                justify-content: flex-start;
+                margin-bottom: 4px;
+            }
+
+            h1 {
+                font-size: 1rem;
+                text-align: left;
+                margin-bottom: 4px;
+            }
+
+            .theme-toggle {
+                width: 2.2rem;
+                height: 2.2rem;
+                font-size: 1.1rem;
+                margin-bottom: 4px;
+            }
+
+            .grid,
+            .results-grid {
+                grid-template-columns: 1fr !important;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 1rem 0.5rem;
+                margin-bottom: 0.7rem;
+            }
+
+            .card h2,
+            .card-title {
+                font-size: 1.05rem;
+            }
+
+            label {
+                font-size: 1rem;
+            }
+
+            input,
+            select {
+                font-size: 1rem;
+                padding: 0.7rem 0.7rem;
+            }
+
+            .range-wrap {
+                flex-direction: column;
+                gap: 4px;
+                align-items: flex-start;
+            }
+
+            .pill {
+                font-size: 0.95rem;
+                padding: 7px 10px;
+            }
+
+            .btn {
+                font-size: 1rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .chart-box,
+            .chart-container {
+                padding: 0.5rem;
+                min-width: 0;
+                overflow-x: auto;
+            }
+
+            .tabs {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .tab {
+                text-align: left;
+                font-size: 0.98rem;
+                padding: 8px 10px;
+            }
+
+            .true-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+                padding: 6px 0;
+            }
+        }
     </style>
 </head>
 
