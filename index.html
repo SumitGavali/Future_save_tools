@@ -8,14 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DKLM0NY9G8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DKLM0NY9G8"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-  gtag('config', 'G-DKLM0NY9G8');
-</script>
+        gtag('config', 'G-DKLM0NY9G8');
+    </script>
     <style>
         :root {
             --primary: #2563eb;
@@ -658,8 +658,8 @@
                 </div>
             </div>
         </div>
-        <div class="impact-summary">
-            <h2><i class="fas fa-info-circle" aria-label="Info"></i> What Formulas I had used to build this tool .</h2>
+        <button class="btn" id='formula'>Formula box.</button>
+        <div class="impact-summary" id="impact" style="display: none;">
 
 
             <p>
@@ -766,7 +766,9 @@
             <p>Made By Sumit Gavali.</p>
         </div>
     </footer>
+
     <script>
+
         // DOM Elements
         const themeToggle = document.getElementById('themeToggle');
         const calculatorForm = document.getElementById('calculatorForm');
@@ -1032,6 +1034,22 @@
             calculatorForm.dispatchEvent(new Event('submit', { cancelable: true }));
         }
         document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <script>
+
+        const formula = document.getElementById("formula");
+        const impact = document.getElementById("impact");
+
+        // Add click listener to that button only
+        formula.addEventListener("click", () => {
+            if (impact.style.display === "none" || impact.style.display === "") {
+                impact.style.display = "block";
+                formula.textContent = "Hide Formula box";
+            } else {
+                impact.style.display = "none";
+                formula.textContent = "Show Formula box";
+            }
+        });
     </script>
 </body>
 
